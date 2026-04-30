@@ -689,29 +689,6 @@ Der nächste Abschnitt beginnt hier..."></textarea>
   }
 
   // ===== Teleprompter =====
-  function enterFullscreen() {
-    const el = document.documentElement;
-    const req = el.requestFullscreen
-             || el.webkitRequestFullscreen
-             || el.mozRequestFullScreen
-             || el.msRequestFullscreen;
-    if (req) {
-      req.call(el).catch(err => console.warn('Fullscreen abgelehnt:', err));
-    }
-  }
-
-  function exitFullscreen() {
-    if (!document.fullscreenElement
-        && !document.webkitFullscreenElement
-        && !document.mozFullScreenElement
-        && !document.msFullscreenElement) return;
-    const exit = document.exitFullscreen
-              || document.webkitExitFullscreen
-              || document.mozCancelFullScreen
-              || document.msExitFullscreen;
-    if (exit) exit.call(document);
-  }
-
   function startPrompter(chapterId) {
     const ch = state.chapters.find(c => c.id === chapterId);
     if (!ch) return;
@@ -721,26 +698,13 @@ Der nächste Abschnitt beginnt hier..."></textarea>
     $('prompterView').classList.add('active');
     $('currentChapterName').textContent = ch.title;
     renderPrompter();
-    enterFullscreen();
   }
 
   function exitPrompter() {
-    exitFullscreen();
     $('prompterView').classList.remove('active');
     $('setupView').style.display = 'block';
     state.activeChapter = null;
   }
-
-  // Wenn der Browser den Vollbildmodus selbst beendet (z.B. via Esc/F11),
-  // synchron auch die Teleprompter-Ansicht schließen.
-  document.addEventListener('fullscreenchange', () => {
-    const isFs = !!document.fullscreenElement;
-    if (!isFs && $('prompterView').classList.contains('active')) {
-      $('prompterView').classList.remove('active');
-      $('setupView').style.display = 'block';
-      state.activeChapter = null;
-    }
-  });
 
   function renderPrompter() {
     const ch = state.activeChapter;
