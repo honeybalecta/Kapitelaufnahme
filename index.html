@@ -15,7 +15,6 @@
     --text: #f0f0f0;
     --muted: #9a9a9a;
     --accent: #f5b400;
-    --accent-soft: rgba(245, 180, 0, 0.15);
     --done: #4ade80;
     --done-soft: rgba(74, 222, 128, 0.12);
   }
@@ -28,23 +27,28 @@
     min-height: 100vh;
   }
 
-  /* ===== Setup-Ansicht ===== */
   .setup {
     max-width: 1100px;
     margin: 0 auto;
     padding: 32px 24px 64px;
   }
-  .header { margin-bottom: 28px; }
+  .header {
+    margin-bottom: 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
   h1 {
     font-size: 30px;
     font-weight: 700;
     letter-spacing: -0.02em;
     margin-bottom: 6px;
   }
-  .subtitle {
-    color: var(--muted);
-    font-size: 15px;
-  }
+  .subtitle { color: var(--muted); font-size: 15px; }
+
+  .header-actions { display: flex; gap: 8px; flex-wrap: wrap; }
 
   .grid {
     display: grid;
@@ -87,10 +91,16 @@
     margin-bottom: 12px;
     line-height: 1.5;
   }
+  .card .hint code {
+    background: #333;
+    padding: 1px 5px;
+    border-radius: 3px;
+    font-size: 12px;
+  }
 
   textarea {
     width: 100%;
-    min-height: 360px;
+    min-height: 320px;
     padding: 14px;
     font-size: 14px;
     line-height: 1.6;
@@ -103,7 +113,19 @@
   }
   textarea:focus { outline: none; border-color: var(--accent); }
 
-  /* File upload */
+  input[type="text"] {
+    width: 100%;
+    padding: 10px 12px;
+    font-size: 14px;
+    background: var(--panel-2);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-family: inherit;
+    margin-bottom: 12px;
+  }
+  input[type="text"]:focus { outline: none; border-color: var(--accent); }
+
   .file-row {
     display: flex;
     gap: 10px;
@@ -123,12 +145,8 @@
     transition: border-color 0.15s, background 0.15s;
   }
   .file-btn:hover { border-color: var(--accent); background: var(--panel); }
-  .file-name {
-    color: var(--muted);
-    font-size: 13px;
-  }
+  .file-name { color: var(--muted); font-size: 13px; }
 
-  /* Kapitelliste */
   .chapters-empty {
     color: var(--muted);
     font-size: 14px;
@@ -141,7 +159,7 @@
     display: flex;
     flex-direction: column;
     gap: 8px;
-    max-height: 420px;
+    max-height: 360px;
     overflow-y: auto;
     padding-right: 4px;
   }
@@ -157,7 +175,6 @@
     display: flex;
     align-items: center;
     gap: 12px;
-    cursor: pointer;
     transition: border-color 0.15s, background 0.15s;
   }
   .chapter:hover { border-color: #555; }
@@ -181,6 +198,7 @@
     justify-content: center;
     background: transparent;
     transition: all 0.15s;
+    cursor: pointer;
   }
   .chapter.done .checkbox {
     background: var(--done);
@@ -193,14 +211,10 @@
     stroke-width: 3;
     fill: none;
     opacity: 0;
-    transition: opacity 0.15s;
   }
   .chapter.done .checkbox svg { opacity: 1; }
 
-  .chapter-info {
-    flex: 1;
-    min-width: 0;
-  }
+  .chapter-info { flex: 1; min-width: 0; }
   .chapter-title {
     font-size: 14px;
     font-weight: 500;
@@ -209,10 +223,7 @@
     text-overflow: ellipsis;
     white-space: nowrap;
   }
-  .chapter-meta {
-    color: var(--muted);
-    font-size: 12px;
-  }
+  .chapter-meta { color: var(--muted); font-size: 12px; }
 
   .play-btn {
     background: var(--accent);
@@ -228,7 +239,6 @@
   }
   .play-btn:hover { transform: scale(1.05); }
 
-  /* Stats */
   .stats {
     display: flex;
     gap: 16px;
@@ -254,7 +264,6 @@
     transition: width 0.3s ease;
   }
 
-  /* Action row */
   .actions {
     display: flex;
     gap: 10px;
@@ -291,7 +300,162 @@
   .status.error { color: #ff7b7b; }
   .status.success { color: var(--done); }
 
-  /* ===== Teleprompter-Ansicht ===== */
+  /* Schriftgrößen-Karte */
+  .font-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 18px;
+    flex-wrap: wrap;
+  }
+  .font-step {
+    background: var(--panel-2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    width: 44px;
+    height: 44px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 22px;
+    font-weight: 600;
+    font-family: inherit;
+    transition: border-color 0.15s, background 0.15s;
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .font-step:hover:not(:disabled) { border-color: var(--accent); background: var(--panel); }
+  .font-step:disabled { opacity: 0.3; cursor: not-allowed; }
+  .font-slider {
+    flex: 1;
+    min-width: 200px;
+    height: 6px;
+    -webkit-appearance: none;
+    appearance: none;
+    background: var(--border);
+    border-radius: 3px;
+    outline: none;
+    cursor: pointer;
+  }
+  .font-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 22px;
+    height: 22px;
+    background: var(--accent);
+    border-radius: 50%;
+    cursor: pointer;
+    border: none;
+  }
+  .font-slider::-moz-range-thumb {
+    width: 22px;
+    height: 22px;
+    background: var(--accent);
+    border-radius: 50%;
+    cursor: pointer;
+    border: none;
+  }
+  .font-label {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text);
+    min-width: 70px;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .preview-stage {
+    background: #000;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 36px 24px;
+    text-align: center;
+    overflow: hidden;
+    min-height: 220px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .preview-sentence { line-height: 1.35; margin: 8px 0; }
+  .preview-sentence.prev,
+  .preview-sentence.next {
+    color: rgba(240, 240, 240, 0.32);
+    font-weight: 400;
+  }
+  .preview-sentence.current {
+    color: var(--text);
+    font-weight: 500;
+    margin: 14px 0;
+  }
+
+  /* Projekte-Modal */
+  .modal-backdrop {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+  .modal-backdrop.active { display: flex; }
+  .modal {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    max-width: 600px;
+    width: 100%;
+    max-height: 80vh;
+    overflow-y: auto;
+  }
+  .modal h2 { font-size: 20px; margin-bottom: 16px; }
+  .project-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  .project-item {
+    background: var(--panel-2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .project-item .info { flex: 1; min-width: 0; }
+  .project-item .name {
+    font-weight: 500;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .project-item .meta {
+    color: var(--muted);
+    font-size: 12px;
+    margin-top: 2px;
+  }
+  .project-item .btn { padding: 6px 12px; font-size: 13px; }
+  .project-item .btn-danger {
+    color: #ff7b7b;
+    border-color: rgba(255, 123, 123, 0.3);
+  }
+  .project-item .btn-danger:hover {
+    border-color: #ff7b7b;
+    background: rgba(255, 123, 123, 0.1);
+  }
+  .modal-empty {
+    color: var(--muted);
+    text-align: center;
+    padding: 24px;
+    font-size: 14px;
+  }
+
+  /* Teleprompter */
   .prompter {
     display: none;
     position: fixed;
@@ -301,6 +465,7 @@
     flex-direction: column;
   }
   .prompter.active { display: flex; }
+  .prompter:fullscreen { background: #000; }
 
   .prompter-bar {
     padding: 14px 20px;
@@ -311,6 +476,7 @@
     align-items: center;
     gap: 16px;
     z-index: 2;
+    flex-shrink: 0;
   }
   .prompter-bar .ch-name {
     font-size: 14px;
@@ -325,7 +491,7 @@
     color: var(--muted);
     font-variant-numeric: tabular-nums;
   }
-  .prompter-bar .icon-btn {
+  .icon-btn {
     background: var(--panel-2);
     border: 1px solid var(--border);
     color: var(--text);
@@ -337,6 +503,7 @@
     align-items: center;
     justify-content: center;
     transition: border-color 0.15s;
+    flex-shrink: 0;
   }
   .icon-btn:hover { border-color: var(--accent); }
   .icon-btn svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 2; }
@@ -349,32 +516,27 @@
     align-items: center;
     padding: 40px;
     overflow: hidden;
-    position: relative;
   }
-
   .sentence {
     width: 100%;
     max-width: 1200px;
     text-align: center;
     line-height: 1.35;
-    font-weight: 500;
-    transition: opacity 0.3s ease, transform 0.3s ease;
+    transition: opacity 0.3s ease;
   }
   .sentence.prev,
   .sentence.next {
-    font-size: clamp(20px, 2.6vw, 32px);
     color: rgba(240, 240, 240, 0.32);
     font-weight: 400;
     margin: 18px 0;
   }
   .sentence.current {
-    font-size: clamp(32px, 5.2vw, 64px);
     color: var(--text);
+    font-weight: 500;
     margin: 24px 0;
   }
-  .sentence.empty { visibility: hidden; }
+  .sentence.empty { visibility: hidden; min-height: 1em; }
 
-  /* Steuerleiste unten */
   .control-bar {
     padding: 18px 24px 22px;
     background: rgba(20, 20, 20, 0.85);
@@ -384,6 +546,7 @@
     align-items: center;
     gap: 14px;
     justify-content: center;
+    flex-shrink: 0;
   }
   .nav-btn {
     background: var(--panel-2);
@@ -409,46 +572,30 @@
   }
   .nav-btn.primary:hover { filter: brightness(1.05); }
   .nav-btn svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2.5; }
-
-  .kbd-hint {
-    position: absolute;
-    bottom: 88px;
-    right: 24px;
-    font-size: 11px;
-    color: var(--muted);
-    background: rgba(20, 20, 20, 0.8);
-    padding: 6px 10px;
-    border-radius: 6px;
-    border: 1px solid var(--border);
-  }
-  .kbd-hint kbd {
-    background: var(--panel-2);
-    padding: 1px 5px;
-    border-radius: 3px;
-    font-family: ui-monospace, monospace;
-    font-size: 10px;
-    margin: 0 2px;
-  }
 </style>
 </head>
 <body>
 
-<!-- ============ Setup ============ -->
 <div class="setup" id="setupView">
   <div class="header">
-    <h1>Teleprompter mit Kapitelübersicht</h1>
-    <p class="subtitle">Word-Dokument hochladen oder Text einfügen, Kapitel wählen, Satz für Satz aufnehmen.</p>
+    <div>
+      <h1>Teleprompter mit Kapitelübersicht</h1>
+      <p class="subtitle">Word-Dokument oder Text einfügen, Kapitel wählen, Satz für Satz aufnehmen.</p>
+    </div>
+    <div class="header-actions">
+      <button class="btn" id="saveProjectBtn">💾 Projekt speichern</button>
+      <button class="btn" id="loadProjectBtn">📂 Projekte</button>
+    </div>
   </div>
 
   <div class="grid">
-    <!-- Linke Spalte: Eingabe -->
     <div class="card">
       <h2><span class="num">1</span> Text einfügen</h2>
       <p class="hint">
-        Word-Dokument (.docx) hochladen <strong>oder</strong> Text direkt einfügen.
-        Kapitel werden automatisch an den Word-Überschriften erkannt.
-        Bei eingefügtem Text gilt jede Zeile, die mit <code style="background:#333;padding:1px 5px;border-radius:3px;">#</code> beginnt, als Kapitel-Überschrift.
+        Word-Dokument (.docx) hochladen <strong>oder</strong> Text einfügen.
+        Bei eingefügtem Text gilt jede Zeile, die mit <code>#</code> beginnt, als Kapitel-Überschrift.
       </p>
+      <input type="text" id="projectTitle" placeholder="Projektname (z.B. Bayerische Revolution Folge 1)">
       <div class="file-row">
         <label class="file-btn" for="fileInput">📄 .docx auswählen</label>
         <input type="file" id="fileInput" accept=".docx" style="display:none">
@@ -466,33 +613,61 @@ Der nächste Abschnitt beginnt hier..."></textarea>
       <div class="status" id="status"></div>
     </div>
 
-    <!-- Rechte Spalte: Kapitelübersicht -->
     <div class="card">
       <h2><span class="num">2</span> Kapitel auswählen</h2>
-      <div id="chaptersContainer">
-        <div class="chapters-empty" id="chaptersEmpty">
-          Noch keine Kapitel erkannt.<br>
-          <span style="font-size:12px;">Text einfügen und auf „Kapitel erkennen" klicken.</span>
+      <div id="chaptersEmpty" class="chapters-empty">
+        Noch keine Kapitel erkannt.<br>
+        <span style="font-size:12px;">Text einfügen und auf „Kapitel erkennen" klicken.</span>
+      </div>
+      <div id="chaptersWrapper" style="display:none;">
+        <div class="stats">
+          <div><strong id="doneCount">0</strong> / <strong id="totalCount">0</strong> erledigt</div>
+          <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
         </div>
-        <div id="chaptersWrapper" style="display:none;">
-          <div class="stats">
-            <div><strong id="doneCount">0</strong> / <strong id="totalCount">0</strong> erledigt</div>
-            <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
-          </div>
-          <div class="chapter-list" id="chapterList"></div>
-          <div class="actions">
-            <button class="btn" id="resetCheckBtn">Alle Haken zurücksetzen</button>
-          </div>
+        <div class="chapter-list" id="chapterList"></div>
+        <div class="actions">
+          <button class="btn" id="resetCheckBtn">Alle Haken zurücksetzen</button>
         </div>
       </div>
     </div>
   </div>
+
+  <div class="card" style="margin-top:24px;">
+    <h2><span class="num">3</span> Schriftgröße einstellen</h2>
+    <p class="hint">Stelle die Schriftgröße so ein, dass du sie aus deiner Aufnahmeentfernung gut lesen kannst. Die Vorschau zeigt das Layout des Teleprompters.</p>
+    <div class="font-row">
+      <button class="font-step" id="fontSmaller">−</button>
+      <input type="range" class="font-slider" id="fontSlider" min="20" max="120" step="2" value="48">
+      <button class="font-step" id="fontBigger">+</button>
+      <span class="font-label" id="fontLabel">48 px</span>
+    </div>
+    <div class="preview-stage">
+      <div class="preview-sentence prev" id="previewPrev">Der vorherige Satz erscheint leicht transparent.</div>
+      <div class="preview-sentence current" id="previewCurrent">Dies ist der aktuelle Satz im Teleprompter.</div>
+      <div class="preview-sentence next" id="previewNext">Und hier folgt der nächste Satz, ebenfalls transparent.</div>
+    </div>
+  </div>
 </div>
 
-<!-- ============ Teleprompter ============ -->
+<div class="modal-backdrop" id="projectsModal">
+  <div class="modal">
+    <h2>Gespeicherte Projekte</h2>
+    <div id="projectListContainer"></div>
+    <div class="actions">
+      <button class="btn" id="exportAllBtn">⬇ Alle als JSON exportieren</button>
+      <label class="btn" for="importInput" style="cursor:pointer;">⬆ JSON importieren</label>
+      <input type="file" id="importInput" accept=".json" style="display:none">
+      <button class="btn primary" id="closeModalBtn" style="margin-left:auto;">Schließen</button>
+    </div>
+    <p class="hint" style="margin-top:14px; margin-bottom:0;">
+      Tipp: Die exportierte JSON-Datei kannst du in Google Drive ablegen, um sie auf anderen Geräten wieder zu importieren.
+    </p>
+  </div>
+</div>
+
 <div class="prompter" id="prompterView">
   <div class="prompter-bar">
-    <button class="icon-btn" id="exitBtn" title="Zurück zur Übersicht (Esc)">
+    <button class="icon-btn" id="exitBtn" title="Zurück (Esc)">
       <svg viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
     </button>
     <div class="ch-name" id="currentChapterName">Kapitel</div>
@@ -501,270 +676,454 @@ Der nächste Abschnitt beginnt hier..."></textarea>
       <svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>
     </button>
   </div>
-
   <div class="stage">
     <div class="sentence prev" id="sentencePrev"></div>
     <div class="sentence current" id="sentenceCurrent"></div>
     <div class="sentence next" id="sentenceNext"></div>
   </div>
-
-  <div class="kbd-hint">
-    <kbd>←</kbd><kbd>→</kbd> navigieren · <kbd>Leertaste</kbd> weiter · <kbd>Esc</kbd> beenden
-  </div>
-
   <div class="control-bar">
     <button class="nav-btn" id="prevBtn">
-      <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
-      Zurück
+      <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg> Zurück
     </button>
     <button class="nav-btn primary" id="nextBtn">
-      Weiter
-      <svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+      Weiter <svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
     </button>
   </div>
 </div>
 
-<!-- JSZip für .docx-Verarbeitung -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-
 <script>
-  // ===== State =====
-  const state = {
-    chapters: [],   // [{ id, title, sentences: [], done: false }]
-    activeChapter: null,
-    sentenceIndex: 0,
-  };
+'use strict';
 
-  // ===== Utility: Sätze splitten =====
-  function splitIntoSentences(text) {
-    if (!text || !text.trim()) return [];
-    // Splittet an . ! ? ; gefolgt von Whitespace und Großbuchstabe / Zeilenende
-    // Behält die Satzzeichen am Ende.
-    const cleaned = text.replace(/\s+/g, ' ').trim();
-    const regex = /[^.!?;]+[.!?;]+(?:["')\]]+)?|[^.!?;]+$/g;
-    const matches = cleaned.match(regex) || [cleaned];
-    return matches.map(s => s.trim()).filter(s => s.length > 0);
-  }
+const $ = id => document.getElementById(id);
 
-  // ===== Utility: Text → Kapitel parsen =====
-  function parsePlainText(text) {
-    const lines = text.split(/\r?\n/);
-    const chapters = [];
-    let current = null;
+function escapeHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
 
-    for (const line of lines) {
-      const trimmed = line.trim();
-      if (!trimmed) continue;
+function setStatus(msg, type = '') {
+  const el = $('status');
+  el.textContent = msg;
+  el.className = 'status ' + type;
+}
 
-      // Heading-Erkennung: Zeile beginnt mit #
-      const headingMatch = trimmed.match(/^#+\s*(.+)$/);
-      if (headingMatch) {
-        if (current && current.body.trim()) chapters.push(current);
-        current = { title: headingMatch[1].trim(), body: '' };
-      } else {
-        if (!current) {
-          // Text vor erstem Heading → "Einleitung"
-          current = { title: 'Einleitung', body: '' };
-        }
-        current.body += (current.body ? ' ' : '') + trimmed;
-      }
+const state = {
+  chapters: [],
+  activeChapter: null,
+  sentenceIndex: 0,
+  fontSize: 48,
+};
+
+try {
+  const saved = parseInt(localStorage.getItem('teleprompt_fontSize'), 10);
+  if (!isNaN(saved) && saved >= 20 && saved <= 120) state.fontSize = saved;
+} catch (e) {}
+
+function splitIntoSentences(text) {
+  if (!text || !text.trim()) return [];
+  const cleaned = text.replace(/\s+/g, ' ').trim();
+  const regex = /[^.!?;]+[.!?;]+(?:["')\]]+)?|[^.!?;]+$/g;
+  const matches = cleaned.match(regex) || [cleaned];
+  return matches.map(s => s.trim()).filter(s => s.length > 0);
+}
+
+function parsePlainText(text) {
+  const lines = text.split(/\r?\n/);
+  const chapters = [];
+  let current = null;
+  for (const line of lines) {
+    const trimmed = line.trim();
+    if (!trimmed) continue;
+    const headingMatch = trimmed.match(/^#+\s*(.+)$/);
+    if (headingMatch) {
+      if (current && current.body.trim()) chapters.push(current);
+      current = { title: headingMatch[1].trim(), body: '' };
+    } else {
+      if (!current) current = { title: 'Einleitung', body: '' };
+      current.body += (current.body ? ' ' : '') + trimmed;
     }
-    if (current && current.body.trim()) chapters.push(current);
-
-    // Falls gar keine Überschriften gefunden: alles als ein Kapitel
-    if (chapters.length === 0 && text.trim()) {
-      chapters.push({ title: 'Text', body: text.trim() });
-    }
-
-    return chapters.map((c, i) => ({
-      id: 'ch-' + i,
-      title: c.title,
-      sentences: splitIntoSentences(c.body),
-      done: false,
-    })).filter(c => c.sentences.length > 0);
   }
-
-  // ===== .docx einlesen =====
-  async function parseDocx(file) {
-    const arrayBuffer = await file.arrayBuffer();
-    const zip = await JSZip.loadAsync(arrayBuffer);
-    const xmlFile = zip.file('word/document.xml');
-    if (!xmlFile) throw new Error('Keine document.xml in der .docx-Datei gefunden.');
-    const xmlText = await xmlFile.async('text');
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(xmlText, 'application/xml');
-
-    const ns = 'http://schemas.openxmlformats.org/wordprocessingml/2006/main';
-    const paragraphs = doc.getElementsByTagNameNS(ns, 'p');
-
-    const chapters = [];
-    let current = null;
-
-    for (const p of paragraphs) {
-      // Text aus allen <w:t>-Elementen zusammensetzen
-      const textNodes = p.getElementsByTagNameNS(ns, 't');
-      let paraText = '';
-      for (const t of textNodes) paraText += t.textContent;
-      paraText = paraText.trim();
-      if (!paraText) continue;
-
-      // Style des Absatzes prüfen
-      const pStyle = p.getElementsByTagNameNS(ns, 'pStyle')[0];
-      const styleVal = pStyle ? (pStyle.getAttribute('w:val') || '').toLowerCase() : '';
-      const isHeading = /^heading\d*/i.test(styleVal) || /^überschrift/i.test(styleVal) || styleVal === 'title';
-
-      if (isHeading) {
-        if (current && current.body.trim()) chapters.push(current);
-        current = { title: paraText, body: '' };
-      } else {
-        if (!current) current = { title: 'Einleitung', body: '' };
-        current.body += (current.body ? ' ' : '') + paraText;
-      }
-    }
-    if (current && current.body.trim()) chapters.push(current);
-
-    if (chapters.length === 0) throw new Error('Kein Text gefunden.');
-
-    return chapters.map((c, i) => ({
-      id: 'ch-' + i,
-      title: c.title,
-      sentences: splitIntoSentences(c.body),
-      done: false,
-    })).filter(c => c.sentences.length > 0);
+  if (current && current.body.trim()) chapters.push(current);
+  if (chapters.length === 0 && text.trim()) {
+    chapters.push({ title: 'Text', body: text.trim() });
   }
+  return chapters.map((c, i) => ({
+    id: 'ch-' + i,
+    title: c.title,
+    sentences: splitIntoSentences(c.body),
+    done: false,
+  })).filter(c => c.sentences.length > 0);
+}
 
-  // ===== Setup-Render =====
-  const $ = id => document.getElementById(id);
-
-  function renderChapters() {
-    const list = $('chapterList');
-    const empty = $('chaptersEmpty');
-    const wrapper = $('chaptersWrapper');
-
-    if (state.chapters.length === 0) {
-      empty.style.display = 'block';
-      wrapper.style.display = 'none';
-      return;
+async function parseDocx(file) {
+  const arrayBuffer = await file.arrayBuffer();
+  const zip = await JSZip.loadAsync(arrayBuffer);
+  const xmlFile = zip.file('word/document.xml');
+  if (!xmlFile) throw new Error('Keine document.xml in der Datei.');
+  const xmlText = await xmlFile.async('text');
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(xmlText, 'application/xml');
+  const ns = 'http://schemas.openxmlformats.org/wordprocessingml/2006/main';
+  const paragraphs = doc.getElementsByTagNameNS(ns, 'p');
+  const chapters = [];
+  let current = null;
+  for (const p of paragraphs) {
+    const textNodes = p.getElementsByTagNameNS(ns, 't');
+    let paraText = '';
+    for (const t of textNodes) paraText += t.textContent;
+    paraText = paraText.trim();
+    if (!paraText) continue;
+    const pStyle = p.getElementsByTagNameNS(ns, 'pStyle')[0];
+    const styleVal = pStyle ? (pStyle.getAttribute('w:val') || '').toLowerCase() : '';
+    const isHeading = /^heading\d*/i.test(styleVal) || /^überschrift/i.test(styleVal) || styleVal === 'title';
+    if (isHeading) {
+      if (current && current.body.trim()) chapters.push(current);
+      current = { title: paraText, body: '' };
+    } else {
+      if (!current) current = { title: 'Einleitung', body: '' };
+      current.body += (current.body ? ' ' : '') + paraText;
     }
-    empty.style.display = 'none';
-    wrapper.style.display = 'block';
-
-    list.innerHTML = '';
-    for (const ch of state.chapters) {
-      const div = document.createElement('div');
-      div.className = 'chapter' + (ch.done ? ' done' : '');
-      div.innerHTML = `
-        <span class="checkbox" data-toggle="${ch.id}">
-          <svg viewBox="0 0 24 24"><polyline points="4 12 10 18 20 6"/></svg>
-        </span>
-        <div class="chapter-info">
-          <div class="chapter-title">${escapeHtml(ch.title)}</div>
-          <div class="chapter-meta">${ch.sentences.length} Satz${ch.sentences.length !== 1 ? 'e' : ''}</div>
-        </div>
-        <button class="play-btn" data-play="${ch.id}">▶ Start</button>
-      `;
-      list.appendChild(div);
-    }
-    updateStats();
   }
+  if (current && current.body.trim()) chapters.push(current);
+  if (chapters.length === 0) throw new Error('Kein Text gefunden.');
+  return chapters.map((c, i) => ({
+    id: 'ch-' + i,
+    title: c.title,
+    sentences: splitIntoSentences(c.body),
+    done: false,
+  })).filter(c => c.sentences.length > 0);
+}
 
-  function updateStats() {
-    const total = state.chapters.length;
-    const done = state.chapters.filter(c => c.done).length;
-    $('doneCount').textContent = done;
-    $('totalCount').textContent = total;
-    $('progressFill').style.width = (total ? (done / total) * 100 : 0) + '%';
+function renderChapters() {
+  const list = $('chapterList');
+  const empty = $('chaptersEmpty');
+  const wrapper = $('chaptersWrapper');
+  if (state.chapters.length === 0) {
+    empty.style.display = 'block';
+    wrapper.style.display = 'none';
+    return;
   }
-
-  function escapeHtml(str) {
+  empty.style.display = 'none';
+  wrapper.style.display = 'block';
+  list.innerHTML = '';
+  for (const ch of state.chapters) {
     const div = document.createElement('div');
-    div.textContent = str;
-    return div.innerHTML;
+    div.className = 'chapter' + (ch.done ? ' done' : '');
+    div.innerHTML = `
+      <span class="checkbox" data-toggle="${ch.id}">
+        <svg viewBox="0 0 24 24"><polyline points="4 12 10 18 20 6"/></svg>
+      </span>
+      <div class="chapter-info">
+        <div class="chapter-title">${escapeHtml(ch.title)}</div>
+        <div class="chapter-meta">${ch.sentences.length} Satz${ch.sentences.length !== 1 ? 'e' : ''}</div>
+      </div>
+      <button class="play-btn" data-play="${ch.id}">▶ Start</button>
+    `;
+    list.appendChild(div);
   }
+  updateStats();
+}
 
-  function setStatus(msg, type = '') {
-    const el = $('status');
-    el.textContent = msg;
-    el.className = 'status ' + type;
+function updateStats() {
+  const total = state.chapters.length;
+  const done = state.chapters.filter(c => c.done).length;
+  $('doneCount').textContent = done;
+  $('totalCount').textContent = total;
+  $('progressFill').style.width = (total ? (done / total) * 100 : 0) + '%';
+}
+
+// === Schriftgröße ===
+function applyFontSize() {
+  const px = state.fontSize;
+  const small = Math.round(px * 0.6);
+  $('previewCurrent').style.fontSize = px + 'px';
+  $('previewPrev').style.fontSize = small + 'px';
+  $('previewNext').style.fontSize = small + 'px';
+  $('sentenceCurrent').style.fontSize = px + 'px';
+  $('sentencePrev').style.fontSize = small + 'px';
+  $('sentenceNext').style.fontSize = small + 'px';
+  $('fontLabel').textContent = px + ' px';
+  $('fontSlider').value = px;
+  $('fontSmaller').disabled = px <= 20;
+  $('fontBigger').disabled = px >= 120;
+  try { localStorage.setItem('teleprompt_fontSize', px); } catch (e) {}
+}
+
+function setFontSize(px) {
+  const clamped = Math.max(20, Math.min(120, parseInt(px, 10) || 48));
+  state.fontSize = clamped;
+  applyFontSize();
+}
+
+// === Vollbild ===
+function tryFullscreen(element) {
+  const req = element.requestFullscreen
+           || element.webkitRequestFullscreen
+           || element.mozRequestFullScreen
+           || element.msRequestFullscreen;
+  if (!req) return Promise.reject(new Error('Fullscreen API not supported'));
+  try {
+    const result = req.call(element);
+    return result && typeof result.then === 'function' ? result : Promise.resolve();
+  } catch (err) {
+    return Promise.reject(err);
   }
+}
 
-  // ===== Teleprompter =====
-  function startPrompter(chapterId) {
-    const ch = state.chapters.find(c => c.id === chapterId);
-    if (!ch) return;
-    state.activeChapter = ch;
-    state.sentenceIndex = 0;
-    $('setupView').style.display = 'none';
-    $('prompterView').classList.add('active');
-    $('currentChapterName').textContent = ch.title;
+function exitFullscreen() {
+  const fsEl = document.fullscreenElement
+            || document.webkitFullscreenElement
+            || document.mozFullScreenElement
+            || document.msFullscreenElement;
+  if (!fsEl) return;
+  const exit = document.exitFullscreen
+            || document.webkitExitFullscreen
+            || document.mozCancelFullScreen
+            || document.msExitFullscreen;
+  if (exit) {
+    try { exit.call(document); } catch (e) {}
+  }
+}
+
+// === Teleprompter ===
+function startPrompter(chapterId) {
+  const ch = state.chapters.find(c => c.id === chapterId);
+  if (!ch) return;
+  state.activeChapter = ch;
+  state.sentenceIndex = 0;
+  $('setupView').style.display = 'none';
+  $('prompterView').classList.add('active');
+  $('currentChapterName').textContent = ch.title;
+  applyFontSize();
+  renderPrompter();
+  tryFullscreen($('prompterView')).catch(err => {
+    console.warn('Fullscreen nicht möglich:', err && err.message);
+  });
+}
+
+function exitPrompter() {
+  exitFullscreen();
+  $('prompterView').classList.remove('active');
+  $('setupView').style.display = 'block';
+  state.activeChapter = null;
+}
+
+function renderPrompter() {
+  const ch = state.activeChapter;
+  if (!ch) return;
+  const i = state.sentenceIndex;
+  const total = ch.sentences.length;
+  $('counter').textContent = (i + 1) + ' / ' + total;
+  const prevEl = $('sentencePrev');
+  const currEl = $('sentenceCurrent');
+  const nextEl = $('sentenceNext');
+  if (i > 0) {
+    prevEl.textContent = ch.sentences[i - 1];
+    prevEl.classList.remove('empty');
+  } else {
+    prevEl.textContent = '';
+    prevEl.classList.add('empty');
+  }
+  currEl.textContent = ch.sentences[i] || '';
+  if (i < total - 1) {
+    nextEl.textContent = ch.sentences[i + 1];
+    nextEl.classList.remove('empty');
+  } else {
+    nextEl.textContent = '';
+    nextEl.classList.add('empty');
+  }
+  $('prevBtn').disabled = i === 0;
+  const isLast = i === total - 1;
+  $('nextBtn').innerHTML = isLast
+    ? 'Fertig <svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>'
+    : 'Weiter <svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>';
+}
+
+function nextSentence() {
+  const ch = state.activeChapter;
+  if (!ch) return;
+  if (state.sentenceIndex < ch.sentences.length - 1) {
+    state.sentenceIndex++;
+    renderPrompter();
+  } else {
+    ch.done = true;
+    saveCurrentProjectAuto();
+    renderChapters();
+    exitPrompter();
+  }
+}
+
+function prevSentence() {
+  if (state.sentenceIndex > 0) {
+    state.sentenceIndex--;
     renderPrompter();
   }
+}
 
-  function exitPrompter() {
-    $('prompterView').classList.remove('active');
-    $('setupView').style.display = 'block';
-    state.activeChapter = null;
+// === Projekte ===
+const PROJECT_KEY = 'teleprompt_projects_v1';
+
+function getProjects() {
+  try {
+    const raw = localStorage.getItem(PROJECT_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch (e) { return []; }
+}
+
+function saveProjects(projects) {
+  try {
+    localStorage.setItem(PROJECT_KEY, JSON.stringify(projects));
+    return true;
+  } catch (e) {
+    alert('Fehler beim Speichern: ' + e.message);
+    return false;
   }
+}
 
-  function renderPrompter() {
-    const ch = state.activeChapter;
-    if (!ch) return;
-    const i = state.sentenceIndex;
-    const total = ch.sentences.length;
+function getCurrentProjectData() {
+  return {
+    title: $('projectTitle').value.trim() || 'Unbenanntes Projekt',
+    text: $('textInput').value,
+    chapters: state.chapters,
+    fontSize: state.fontSize,
+    updatedAt: new Date().toISOString(),
+  };
+}
 
-    $('counter').textContent = (i + 1) + ' / ' + total;
-
-    const prevEl = $('sentencePrev');
-    const currEl = $('sentenceCurrent');
-    const nextEl = $('sentenceNext');
-
-    if (i > 0) {
-      prevEl.textContent = ch.sentences[i - 1];
-      prevEl.classList.remove('empty');
-    } else {
-      prevEl.textContent = '';
-      prevEl.classList.add('empty');
-    }
-
-    currEl.textContent = ch.sentences[i] || '';
-
-    if (i < total - 1) {
-      nextEl.textContent = ch.sentences[i + 1];
-      nextEl.classList.remove('empty');
-    } else {
-      nextEl.textContent = '';
-      nextEl.classList.add('empty');
-    }
-
-    $('prevBtn').disabled = i === 0;
-    const isLast = i === total - 1;
-    $('nextBtn').innerHTML = isLast
-      ? 'Fertig <svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>'
-      : 'Weiter <svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>';
+function saveCurrentProject() {
+  if (state.chapters.length === 0 && !$('textInput').value.trim()) {
+    alert('Es gibt nichts zu speichern. Füge zuerst Text ein.');
+    return;
   }
-
-  function nextSentence() {
-    const ch = state.activeChapter;
-    if (!ch) return;
-    if (state.sentenceIndex < ch.sentences.length - 1) {
-      state.sentenceIndex++;
-      renderPrompter();
-    } else {
-      // letzter Satz → Kapitel als erledigt markieren und zurück
-      ch.done = true;
-      renderChapters();
-      exitPrompter();
-    }
+  const projects = getProjects();
+  const data = getCurrentProjectData();
+  const existingIndex = projects.findIndex(p => p.title === data.title);
+  if (existingIndex >= 0) {
+    data.createdAt = projects[existingIndex].createdAt;
+    projects[existingIndex] = data;
+  } else {
+    data.createdAt = data.updatedAt;
+    projects.unshift(data);
   }
-
-  function prevSentence() {
-    if (state.sentenceIndex > 0) {
-      state.sentenceIndex--;
-      renderPrompter();
-    }
+  if (saveProjects(projects)) {
+    setStatus('Projekt „' + data.title + '" gespeichert.', 'success');
   }
+}
 
-  // ===== Event-Handler =====
+function saveCurrentProjectAuto() {
+  const title = $('projectTitle').value.trim();
+  if (!title) return;
+  const projects = getProjects();
+  const existingIndex = projects.findIndex(p => p.title === title);
+  if (existingIndex < 0) return;
+  const data = getCurrentProjectData();
+  data.createdAt = projects[existingIndex].createdAt;
+  projects[existingIndex] = data;
+  saveProjects(projects);
+}
+
+function loadProject(project) {
+  $('projectTitle').value = project.title || '';
+  $('textInput').value = project.text || '';
+  state.chapters = (project.chapters || []).map(c => ({ ...c }));
+  if (project.fontSize) {
+    state.fontSize = project.fontSize;
+    applyFontSize();
+  }
+  renderChapters();
+  $('projectsModal').classList.remove('active');
+  setStatus('Projekt „' + project.title + '" geladen.', 'success');
+}
+
+function deleteProject(title) {
+  if (!confirm('Projekt „' + title + '" wirklich löschen?')) return;
+  const projects = getProjects().filter(p => p.title !== title);
+  saveProjects(projects);
+  renderProjectList();
+}
+
+function renderProjectList() {
+  const container = $('projectListContainer');
+  const projects = getProjects();
+  if (projects.length === 0) {
+    container.innerHTML = '<div class="modal-empty">Noch keine gespeicherten Projekte.</div>';
+    return;
+  }
+  projects.sort((a, b) => (b.updatedAt || '').localeCompare(a.updatedAt || ''));
+  container.innerHTML = '<div class="project-list">' + projects.map(p => {
+    const date = p.updatedAt ? new Date(p.updatedAt).toLocaleString('de-DE') : '';
+    const total = (p.chapters || []).length;
+    const done = (p.chapters || []).filter(c => c.done).length;
+    return `
+      <div class="project-item">
+        <div class="info">
+          <div class="name">${escapeHtml(p.title)}</div>
+          <div class="meta">${done}/${total} Kapitel erledigt · ${date}</div>
+        </div>
+        <button class="btn" data-load="${escapeHtml(p.title)}">Laden</button>
+        <button class="btn btn-danger" data-delete="${escapeHtml(p.title)}">×</button>
+      </div>
+    `;
+  }).join('') + '</div>';
+}
+
+function exportAllProjects() {
+  const projects = getProjects();
+  if (projects.length === 0) {
+    alert('Keine Projekte zum Exportieren.');
+    return;
+  }
+  const blob = new Blob([JSON.stringify(projects, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  const date = new Date().toISOString().split('T')[0];
+  a.download = `teleprompter-projekte-${date}.json`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function importProjects(file) {
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try {
+      const imported = JSON.parse(e.target.result);
+      if (!Array.isArray(imported)) throw new Error('JSON muss ein Array sein.');
+      const existing = getProjects();
+      const titles = new Set(existing.map(p => p.title));
+      let added = 0, updated = 0;
+      for (const proj of imported) {
+        if (!proj.title) continue;
+        if (titles.has(proj.title)) {
+          const idx = existing.findIndex(p => p.title === proj.title);
+          existing[idx] = proj;
+          updated++;
+        } else {
+          existing.push(proj);
+          added++;
+        }
+      }
+      saveProjects(existing);
+      renderProjectList();
+      alert(`Import erfolgreich: ${added} neu, ${updated} aktualisiert.`);
+    } catch (err) {
+      alert('Fehler beim Import: ' + err.message);
+    }
+  };
+  reader.readAsText(file);
+}
+
+// === Init ===
+window.addEventListener('DOMContentLoaded', () => {
+  $('fontSlider').addEventListener('input', (e) => setFontSize(e.target.value));
+  $('fontSmaller').addEventListener('click', () => setFontSize(state.fontSize - 4));
+  $('fontBigger').addEventListener('click', () => setFontSize(state.fontSize + 4));
+  applyFontSize();
+
   $('parseBtn').addEventListener('click', () => {
     const text = $('textInput').value;
     if (!text.trim()) {
@@ -773,7 +1132,7 @@ Der nächste Abschnitt beginnt hier..."></textarea>
     }
     state.chapters = parsePlainText(text);
     if (state.chapters.length === 0) {
-      setStatus('Es konnten keine Sätze erkannt werden.', 'error');
+      setStatus('Keine Sätze erkannt.', 'error');
       return;
     }
     setStatus(state.chapters.length + ' Kapitel erkannt.', 'success');
@@ -782,6 +1141,7 @@ Der nächste Abschnitt beginnt hier..."></textarea>
 
   $('clearBtn').addEventListener('click', () => {
     $('textInput').value = '';
+    $('projectTitle').value = '';
     $('fileName').textContent = 'keine Datei';
     $('fileInput').value = '';
     state.chapters = [];
@@ -796,11 +1156,14 @@ Der nächste Abschnitt beginnt hier..."></textarea>
     setStatus('Lese .docx ein …');
     try {
       state.chapters = await parseDocx(file);
+      if (!$('projectTitle').value.trim()) {
+        $('projectTitle').value = file.name.replace(/\.docx$/i, '');
+      }
       setStatus(state.chapters.length + ' Kapitel aus .docx erkannt.', 'success');
       renderChapters();
     } catch (err) {
       console.error(err);
-      setStatus('Fehler beim Lesen der .docx: ' + err.message, 'error');
+      setStatus('Fehler: ' + err.message, 'error');
     }
   });
 
@@ -809,37 +1172,35 @@ Der nächste Abschnitt beginnt hier..."></textarea>
     renderChapters();
   });
 
-  // Kapitelliste: Click-Delegation
   $('chapterList').addEventListener('click', (e) => {
-    const playId = e.target.closest('[data-play]')?.dataset.play;
-    if (playId) {
-      startPrompter(playId);
+    const playEl = e.target.closest('[data-play]');
+    if (playEl) {
+      startPrompter(playEl.dataset.play);
       return;
     }
-    const toggleId = e.target.closest('[data-toggle]')?.dataset.toggle
-                  || e.target.closest('.chapter')?.querySelector('[data-toggle]')?.dataset.toggle;
-    if (toggleId) {
-      const ch = state.chapters.find(c => c.id === toggleId);
+    const toggleEl = e.target.closest('[data-toggle]');
+    if (toggleEl) {
+      const ch = state.chapters.find(c => c.id === toggleEl.dataset.toggle);
       if (ch) {
         ch.done = !ch.done;
+        saveCurrentProjectAuto();
         renderChapters();
       }
     }
   });
 
-  // Prompter-Steuerung
   $('exitBtn').addEventListener('click', exitPrompter);
   $('nextBtn').addEventListener('click', nextSentence);
   $('prevBtn').addEventListener('click', prevSentence);
   $('markDoneBtn').addEventListener('click', () => {
     if (state.activeChapter) {
       state.activeChapter.done = true;
+      saveCurrentProjectAuto();
       renderChapters();
       exitPrompter();
     }
   });
 
-  // Tastatur
   document.addEventListener('keydown', (e) => {
     if (!$('prompterView').classList.contains('active')) return;
     if (e.key === 'ArrowRight' || e.key === ' ') {
@@ -852,6 +1213,40 @@ Der nächste Abschnitt beginnt hier..."></textarea>
       exitPrompter();
     }
   });
+
+  $('saveProjectBtn').addEventListener('click', saveCurrentProject);
+  $('loadProjectBtn').addEventListener('click', () => {
+    renderProjectList();
+    $('projectsModal').classList.add('active');
+  });
+  $('closeModalBtn').addEventListener('click', () => {
+    $('projectsModal').classList.remove('active');
+  });
+  $('projectsModal').addEventListener('click', (e) => {
+    if (e.target === $('projectsModal')) {
+      $('projectsModal').classList.remove('active');
+    }
+  });
+  $('projectListContainer').addEventListener('click', (e) => {
+    const loadEl = e.target.closest('[data-load]');
+    if (loadEl) {
+      const projects = getProjects();
+      const proj = projects.find(p => p.title === loadEl.dataset.load);
+      if (proj) loadProject(proj);
+      return;
+    }
+    const delEl = e.target.closest('[data-delete]');
+    if (delEl) {
+      deleteProject(delEl.dataset.delete);
+    }
+  });
+  $('exportAllBtn').addEventListener('click', exportAllProjects);
+  $('importInput').addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (file) importProjects(file);
+    e.target.value = '';
+  });
+});
 </script>
 </body>
 </html>
